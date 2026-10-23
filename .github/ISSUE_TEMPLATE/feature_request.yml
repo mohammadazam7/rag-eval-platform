@@ -1,0 +1,21 @@
+name: Feature request
+description: Propose a retriever, chunking strategy, metric or backend
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or question this answers
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+    validations:
+      required: true
+  - type: textarea
+    id: evaluation
+    attributes:
+      label: How we will know it helped
+      description: The metric and dataset that should move, and by how much.
