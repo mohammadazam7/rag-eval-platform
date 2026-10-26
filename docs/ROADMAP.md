@@ -2,7 +2,7 @@
 
 Each milestone lands as a reviewed pull request with tests. Checked items are done.
 
-- [ ] **M1: Corpus and chunking** (Oct 23 to Oct 25). Document model with stable IDs,
+- [x] **M1: Corpus and chunking** (Oct 23 to Oct 25). Document model with stable IDs,
       fixed-window and sentence-aware chunkers with overlap, character offsets back into
       the source, loaders for Markdown and plain text.
 - [ ] **M2: Retrieval** (Oct 26 to Oct 29). BM25 index, dense retrieval behind an
