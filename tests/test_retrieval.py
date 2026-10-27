@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from rag_eval.documents import Chunk
-from rag_eval.retrieval import BM25Retriever, tokenize
+from rag_eval.retrieval import BM25Retriever, reciprocal_rank_fusion, tokenize
 
 
 def _chunk(doc_id: str, text: str) -> Chunk:
@@ -50,3 +50,21 @@ def test_bm25_handles_empty_corpus() -> None:
 def test_bm25_rejects_invalid_parameters(chunks: list[Chunk]) -> None:
     with pytest.raises(ValueError):
         BM25Retriever(chunks, b=1.5)
+
+
+def test_rrf_rewards_agreement_between_retrievers(chunks: list[Chunk]) -> None:
+    a, b, c = chunks[0], chunks[1], chunks[2]
+    fused = reciprocal_rank_fusion([[(a, 9.0), (c, 5.0)], [(b, 0.9), (c, 0.8)]])
+    assert fused[0][0] == c
+
+
+def test_rrf_ignores_raw_score_scales(chunks: list[Chunk]) -> None:
+    a, b = chunks[0], chunks[1]
+    left = reciprocal_rank_fusion([[(a, 1000.0), (b, 1.0)]])
+    right = reciprocal_rank_fusion([[(a, 0.2), (b, 0.1)]])
+    assert [s for _, s in left] == [s for _, s in right]
+
+
+def test_rrf_truncates_to_k(chunks: list[Chunk]) -> None:
+    ranking = [(chunk, 1.0) for chunk in chunks]
+    assert len(reciprocal_rank_fusion([ranking], k=2)) == 2

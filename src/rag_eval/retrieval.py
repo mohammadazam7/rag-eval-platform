@@ -67,3 +67,24 @@ class BM25Retriever:
         hits = [(c, s) for c, s in scored if s > 0]
         hits.sort(key=lambda pair: (-pair[1], pair[0].chunk_id))
         return hits[:k]
+
+
+def reciprocal_rank_fusion(
+    rankings: Sequence[Sequence[ScoredChunk]], k: int = 10, c: float = 60.0
+) -> list[ScoredChunk]:
+    """Fuse ranked lists with reciprocal rank fusion (Cormack et al., 2009).
+
+    Each chunk scores ``sum(1 / (c + rank))`` over the lists it appears in, with ranks
+    starting at 1. Only ranks are used, so retrievers whose raw scores live on different
+    scales, such as BM25 and cosine similarity, can be combined without calibration.
+    """
+    if c <= 0:
+        raise ValueError("c must be positive")
+    fused: dict[str, float] = {}
+    by_id: dict[str, Chunk] = {}
+    for ranking in rankings:
+        for rank, (chunk, _) in enumerate(ranking, start=1):
+            by_id[chunk.chunk_id] = chunk
+            fused[chunk.chunk_id] = fused.get(chunk.chunk_id, 0.0) + 1.0 / (c + rank)
+    ordered = sorted(fused.items(), key=lambda item: (-item[1], item[0]))
+    return [(by_id[chunk_id], score) for chunk_id, score in ordered[:k]]
