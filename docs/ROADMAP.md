@@ -1,11 +1,11 @@
 # Roadmap
 
-Each milestone lands as a reviewed pull request with tests. Checked items are done.
+Each milestone lands on its own branch with tests and is merged when complete. Checked items are done.
 
 - [x] **M1: Corpus and chunking** (Oct 23 to Oct 25). Document model with stable IDs,
       fixed-window and sentence-aware chunkers with overlap, character offsets back into
       the source, loaders for Markdown and plain text.
-- [ ] **M2: Retrieval** (Oct 26 to Oct 29). BM25 index, dense retrieval behind an
+- [x] **M2: Retrieval** (Oct 26 to Oct 29). BM25 index, dense retrieval behind an
       embedding interface, reciprocal rank fusion, persisted indexes.
 - [ ] **M3: Re-ranking and generation** (Oct 30 to Nov 2). Cross-encoder re-ranker
       interface, prompt construction with passage IDs, answers with citations, a
