@@ -88,3 +88,26 @@ def reciprocal_rank_fusion(
             fused[chunk.chunk_id] = fused.get(chunk.chunk_id, 0.0) + 1.0 / (c + rank)
     ordered = sorted(fused.items(), key=lambda item: (-item[1], item[0]))
     return [(by_id[chunk_id], score) for chunk_id, score in ordered[:k]]
+
+
+class HybridRetriever:
+    """Runs several retrievers and fuses their rankings with reciprocal rank fusion.
+
+    Each retriever is asked for ``depth`` candidates so that a chunk ranked moderately by
+    both a lexical and a dense retriever can outrank one that only a single retriever
+    likes. ``depth`` should be at least the largest ``k`` that will be requested.
+    """
+
+    def __init__(self, retrievers: Sequence[Retriever], depth: int = 50, c: float = 60.0) -> None:
+        if not retrievers:
+            raise ValueError("at least one retriever is required")
+        if depth < 1:
+            raise ValueError("depth must be at least 1")
+        self.retrievers = list(retrievers)
+        self.depth = depth
+        self.c = c
+
+    def search(self, query: str, k: int = 10) -> list[ScoredChunk]:
+        depth = max(self.depth, k)
+        rankings = [r.search(query, k=depth) for r in self.retrievers]
+        return reciprocal_rank_fusion(rankings, k=k, c=self.c)
