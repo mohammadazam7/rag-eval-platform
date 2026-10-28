@@ -65,6 +65,19 @@ class DenseRetriever:
             else np.zeros((0, embedder.dim), dtype=np.float32)
         )
 
+    @classmethod
+    def from_matrix(
+        cls, chunks: Sequence[Chunk], embedder: Embedder, matrix: Matrix
+    ) -> DenseRetriever:
+        """Build a retriever from embeddings computed earlier, skipping the encode step."""
+        if matrix.shape != (len(chunks), embedder.dim):
+            raise ValueError(f"matrix shape {matrix.shape} does not fit {len(chunks)} chunks")
+        retriever = cls.__new__(cls)
+        retriever.chunks = list(chunks)
+        retriever.embedder = embedder
+        retriever.matrix = matrix
+        return retriever
+
     def search(self, query: str, k: int = 10) -> list[ScoredChunk]:
         if not self.chunks:
             return []
