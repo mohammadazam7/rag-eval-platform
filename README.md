@@ -63,6 +63,26 @@ make install
 make check
 ```
 
+## Example: three retrievers, one query
+
+`examples/ask.py` indexes a folder of Markdown and prints the top three chunks from BM25,
+the dense retriever and their reciprocal rank fusion, each with its document and the
+character span it came from. Run on the architecture docs and decision records of
+[nyc-taxi-data-lake](https://github.com/mohammadazam7/nyc-taxi-data-lake):
+
+```bash
+python examples/ask.py path/to/docs "why quarantine rejected rows instead of dropping them"
+```
+
+![BM25, dense and hybrid results for one query](docs/images/hybrid-retrieval.png)
+
+BM25 ranks the decision record's rationale first on exact terms; the dense retriever
+prefers its title and summary. Fusion puts both chunks of the record at the top, ahead
+of the architecture note, which neither retriever ranked first. The dense model here is
+the dependency-free hashing baseline, so the gap between the two is about lexical
+overlap rather than meaning; a sentence-transformer embedder plugs into the same
+interface in a later milestone.
+
 ## License
 
 MIT
