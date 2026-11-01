@@ -31,6 +31,7 @@ _CITATION = re.compile(r"\[P(\d+)\]")
 
 @dataclass(frozen=True, slots=True)
 class Prompt:
+    question: str
     system: str
     user: str
     passages: dict[str, Chunk]
@@ -75,8 +76,9 @@ def build_prompt(question: str, chunks: Sequence[Chunk], max_context_tokens: int
         used += cost
 
     context = "\n\n".join(blocks) if blocks else "(no passages)"
-    user = f"Passages:\n\n{context}\n\nQuestion: {question.strip()}"
-    return Prompt(system=SYSTEM, user=user, passages=passages)
+    question = question.strip()
+    user = f"Passages:\n\n{context}\n\nQuestion: {question}"
+    return Prompt(question=question, system=SYSTEM, user=user, passages=passages)
 
 
 @dataclass(frozen=True, slots=True)
