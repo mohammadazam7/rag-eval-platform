@@ -6,9 +6,9 @@ Retrieval-augmented question answering over a document collection, with answers 
 their sources, and an evaluation harness that measures whether a change to chunking,
 retrieval or generation made the system better or worse.
 
-> **Status:** early development. The project foundation is in place; see the
-> [roadmap](docs/ROADMAP.md) for milestone dates. Results will be published here only
-> once they have been measured.
+> **Status:** in development. Chunking, retrieval, re-ranking and cited answer generation
+> are in place; the evaluation harness is next. See the [roadmap](docs/ROADMAP.md) for
+> milestone dates. Results will be published here only once they have been measured.
 
 ## Overview
 
@@ -82,6 +82,38 @@ of the architecture note, which neither retriever ranked first. The dense model 
 the dependency-free hashing baseline, so the gap between the two is about lexical
 overlap rather than meaning; a sentence-transformer embedder plugs into the same
 interface in a later milestone.
+
+## Example: cited answers
+
+`examples/answer.py` runs the whole pipeline: hybrid retrieval, the term-proximity
+re-ranker over 30 candidates, a prompt with the top 4 passages labelled `[P1]` to `[P4]`,
+and the deterministic extractive backend. Each citation resolves to a document and
+character span. Same corpus as above:
+
+```text
+$ python examples/answer.py path/to/docs "why quarantine rejected rows instead of dropping them" \
+    "how are late arriving records handled" "which cloud region hosts the warehouse"
+
+Q: why quarantine rejected rows instead of dropping them
+A: Rejected rows go to the quarantine zone with the first reason code they break; the codes
+   are part of the contract because quality checks group by them [P4]. Quarantine rejected
+   rows with a reason code [P3].
+   [P4] architecture.md [3827:4352]
+   [P3] adr/0003-quarantine-instead-of-drop.md [0:350]
+
+Q: how are late arriving records handled
+A: There is no incremental or late-arriving-data path beyond re-running a month [P3].
+   [P3] architecture.md [7085:7282]
+
+Q: which cloud region hosts the warehouse
+A: I don't know.
+```
+
+The third question has no answer in the corpus, and the backend abstains rather than
+quoting the closest passage. The extractive backend only quotes, so its citations are
+correct by construction; it is the reference a model backend is measured against in
+milestone 4, where citation precision and abstention on unanswerable questions are
+scored over a question set.
 
 ## License
 

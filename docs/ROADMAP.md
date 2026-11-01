@@ -7,7 +7,7 @@ Each milestone lands on its own branch with tests and is merged when complete. C
       the source, loaders for Markdown and plain text.
 - [x] **M2: Retrieval** (Oct 26 to Oct 29). BM25 index, dense retrieval behind an
       embedding interface, reciprocal rank fusion, persisted indexes.
-- [ ] **M3: Re-ranking and generation** (Oct 30 to Nov 2). Cross-encoder re-ranker
+- [x] **M3: Re-ranking and generation** (Oct 30 to Nov 2). Cross-encoder re-ranker
       interface, prompt construction with passage IDs, answers with citations, a
       deterministic stub backend for tests.
 - [ ] **M4: Evaluation harness** (Nov 3 to Nov 6). Question sets with gold passages,

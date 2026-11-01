@@ -6,6 +6,13 @@ All notable changes are recorded here. The format follows
 ## [Unreleased]
 
 ### Added
+- Milestone 3: re-ranking and generation. A `Reranker` protocol with a deterministic
+  `TermProximityReranker` baseline and `RerankingRetriever`; `build_prompt`, which labels
+  passages `[P1]`, `[P2]`, ... within a token budget; `parse_answer`, which resolves
+  citations to chunks and records labels the model was never shown; a `Generator`
+  protocol with an `ExtractiveStubGenerator` that quotes supporting sentences or
+  abstains; and `Answerer`, which runs the full pipeline. `examples/answer.py` shows it
+  on a Markdown corpus.
 - Milestone 2: retrieval. `BM25Retriever` (Lucene IDF), `DenseRetriever` behind an
   `Embedder` protocol with a dependency-free `HashingEmbedder` baseline,
   `reciprocal_rank_fusion` and a `HybridRetriever` built on it, and on-disk dense
