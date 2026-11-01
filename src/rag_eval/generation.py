@@ -20,7 +20,10 @@ from typing import Protocol
 from rag_eval.prompting import ABSTAIN, Prompt
 from rag_eval.retrieval import tokenize
 
-_SENTENCE = re.compile(r"[^.!?]+[.!?]?")
+# A sentence ends at ., ! or ? followed by whitespace, so "adr/0003.md" or "v1.2" do not
+# split. Markdown table rows and emphasis markers are not prose and are handled below.
+_SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
+_MARKUP = re.compile(r"\*\*|__|`|^#+\s*|^[-*]\s+")
 
 # Function words that carry no topic, so a match on them alone is not support.
 _STOPWORDS = frozenset(
@@ -38,6 +41,35 @@ class Generator(Protocol):
 
 def _content_terms(text: str) -> set[str]:
     return {t for t in tokenize(text) if t not in _STOPWORDS}
+
+
+def _paragraphs(text: str) -> list[str]:
+    """Prose blocks of ``text``: wrapped lines joined, table rows dropped.
+
+    Headings and list items start a new block, since they are not continuations of the
+    line above even when no blank line separates them.
+    """
+    blocks: list[list[str]] = [[]]
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("|"):
+            blocks.append([])
+            continue
+        if line.startswith(("#", "- ", "* ")) or re.match(r"\d+\.\s", line):
+            blocks.append([])
+        blocks[-1].append(line)
+    return [" ".join(b) for b in blocks if b]
+
+
+def _sentences(text: str) -> list[str]:
+    """Prose sentences of ``text``, with Markdown markup removed and table rows skipped."""
+    out: list[str] = []
+    for block in _paragraphs(text):
+        for part in _SENTENCE_END.split(_MARKUP.sub("", block)):
+            sentence = " ".join(part.split())
+            if sentence:
+                out.append(sentence)
+    return out
 
 
 class ExtractiveStubGenerator:
@@ -62,10 +94,7 @@ class ExtractiveStubGenerator:
             return ABSTAIN
         candidates: list[tuple[float, int, int, str, str]] = []
         for rank, (label, chunk) in enumerate(prompt.passages.items()):
-            for position, match in enumerate(_SENTENCE.finditer(chunk.text)):
-                sentence = " ".join(match.group(0).split())
-                if not sentence:
-                    continue
+            for position, sentence in enumerate(_sentences(chunk.text)):
                 overlap = len(wanted & _content_terms(sentence)) / len(wanted)
                 if overlap >= self.min_overlap:
                     candidates.append((overlap, rank, position, label, sentence))

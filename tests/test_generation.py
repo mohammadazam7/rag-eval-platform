@@ -58,3 +58,20 @@ def test_output_is_deterministic() -> None:
 def test_invalid_arguments(kwargs: dict[str, float]) -> None:
     with pytest.raises(ValueError):
         ExtractiveStubGenerator(**kwargs)  # type: ignore[arg-type]
+
+
+def test_markdown_tables_and_markup_are_not_quoted() -> None:
+    text = (
+        "| ADR | Decision |\n| [0003](0003-quarantine.md) | Quarantine rejected rows |\n"
+        "**Limitation.** Rejected rows are kept in quarantine for 30 days, see adr/0003.md."
+    )
+    prompt = build_prompt("how long are rejected rows kept", [_chunk("docs.md", text)])
+    out = ExtractiveStubGenerator(max_sentences=3).generate(prompt)
+    assert out == "Rejected rows are kept in quarantine for 30 days, see adr/0003.md [P1]."
+
+
+def test_wrapped_lines_are_one_sentence() -> None:
+    text = "There is no late-arriving-data path\nbeyond re-running a month.\n- Retries: two."
+    prompt = build_prompt("late arriving data path", [_chunk("a.md", text)])
+    out = ExtractiveStubGenerator(max_sentences=1).generate(prompt)
+    assert out == "There is no late-arriving-data path beyond re-running a month [P1]."
