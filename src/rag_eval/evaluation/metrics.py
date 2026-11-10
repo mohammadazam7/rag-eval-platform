@@ -87,12 +87,21 @@ def reciprocal_rank(question: Question, ranked: Sequence[Chunk]) -> float:
 
 
 def ndcg_at_k(question: Question, ranked: Sequence[Chunk], k: int) -> float:
-    """Binary-relevance nDCG; the ideal ranking puts one relevant chunk per gold span first."""
+    """Binary-relevance nDCG; the ideal ranking puts one relevant chunk per gold span first.
+
+    A chunk earns gain only when it covers a gold span no earlier chunk covered. With
+    overlapping chunks one span can match several chunks, and counting each of them
+    would push the score above 1.
+    """
     if not question.answerable:
         return float("nan")
-    dcg = sum(
-        1.0 / math.log2(i + 1) for i, c in enumerate(ranked[:k], 1) if question.is_relevant(c)
-    )
+    covered: set[int] = set()
+    dcg = 0.0
+    for i, chunk in enumerate(ranked[:k], 1):
+        new = {j for j, span in enumerate(question.evidence) if span.overlaps(chunk)} - covered
+        if new:
+            covered |= new
+            dcg += 1.0 / math.log2(i + 1)
     ideal_hits = min(k, len(question.evidence))
     idcg = sum(1.0 / math.log2(i + 1) for i in range(1, ideal_hits + 1))
     return dcg / idcg

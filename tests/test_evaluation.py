@@ -102,6 +102,16 @@ def test_ranking_metrics() -> None:
     assert math.isnan(reciprocal_rank(unanswerable, ranked))
 
 
+def test_ndcg_counts_each_gold_span_once() -> None:
+    q = _q([("bees.md", "waggle dance")])
+    at = DOCS["bees.md"].text.index("waggle")
+    overlapping = [_chunk("bees.md", at - 10, at + 8), _chunk("bees.md", at + 2, at + 20)]
+    assert ndcg_at_k(q, overlapping, 10) == 1.0
+    assert ndcg_at_k(q, [_chunk("tides.md", 0, 20), *overlapping], 10) == pytest.approx(
+        1 / math.log2(3)
+    )
+
+
 def _answer(text: str, chunks: list[Chunk]) -> Answer:
     prompt = build_prompt("q?", chunks)
     return Answer("q?", tuple((c, 1.0) for c in chunks), prompt, parse_answer(text, prompt))
