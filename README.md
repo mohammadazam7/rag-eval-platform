@@ -6,9 +6,9 @@ Retrieval-augmented question answering over a document collection, with answers 
 their sources, and an evaluation harness that measures whether a change to chunking,
 retrieval or generation made the system better or worse.
 
-> **Status:** in development. Chunking, retrieval, re-ranking and cited answer generation
-> are in place; the evaluation harness is next. See the [roadmap](docs/ROADMAP.md) for
-> milestone dates. Results will be published here only once they have been measured.
+> **Status:** in development. Chunking, retrieval, re-ranking, cited answers and the
+> evaluation harness are in place, with measured results on a public corpus below. The
+> HTTP service is next. See the [roadmap](docs/ROADMAP.md) for milestone dates.
 
 ## Overview
 
@@ -43,6 +43,43 @@ flowchart LR
 | Re-ranker | Rescore the top candidates with a more expensive model |
 | Generator | Produce an answer constrained to the retrieved passages, citing passage IDs; a deterministic local stub backs the tests |
 | Evaluation harness | Retrieval recall@k and MRR against gold passages; answer faithfulness and hallucination rate; side-by-side comparison of configurations |
+
+## Results: FastAPI tutorial benchmark
+
+44 questions over the 51 Markdown files of the FastAPI tutorial (MIT licence, pinned to
+one upstream commit): 36 with a verbatim gold quote and 8 the tutorial cannot answer.
+Every row uses the same 80 token sentence chunks, the top 4 chunks and the extractive
+backend, so the rows differ only in retrieval. Mean with 95% bootstrap interval.
+
+| Configuration | recall@5 | MRR | nDCG@10 | Correct abstention | ms per question |
+|---|---|---|---|---|---|
+| BM25 | 0.81 [0.67, 0.92] | 0.63 [0.51, 0.75] | 0.71 [0.60, 0.80] | 0.75 [0.61, 0.89] | 9.3 |
+| Dense (hashing, 512) | 0.53 [0.36, 0.69] | 0.42 [0.28, 0.57] | 0.48 [0.35, 0.62] | 0.70 [0.57, 0.84] | 1.1 |
+| Hybrid (RRF) | 0.75 [0.61, 0.89] | 0.52 [0.40, 0.65] | 0.60 [0.48, 0.72] | 0.70 [0.57, 0.84] | 9.7 |
+| Hybrid + re-rank | 0.67 [0.50, 0.81] | 0.56 [0.43, 0.69] | 0.63 [0.51, 0.75] | 0.61 [0.48, 0.75] | 13.2 |
+
+Measured on x86_64 with 2 vCPUs, Python 3.13, one process. Full table with citation and
+grounding metrics: [benchmarks/fastapi-tutorial/RESULTS.md](benchmarks/fastapi-tutorial/RESULTS.md).
+
+What the numbers say:
+
+- On short reference prose where questions reuse the documentation's own terms, BM25
+  is the strongest single retriever. The hashing embedder is a lexical baseline, not a
+  learned model, and fusing it with BM25 costs ranking quality instead of adding it.
+- The intervals are wide at 44 questions. Hybrid and BM25 overlap on every metric, so
+  the honest conclusion is "no evidence hybrid helps here", not "hybrid is worse".
+- Re-ranking moves gold chunks up (MRR and nDCG rise over plain hybrid) but the
+  extractive backend then answers fewer answerable questions (20 of 36, against 24 for
+  plain hybrid and 25 for BM25), because it keeps only 4 chunks and the re-ranker trades
+  recall@5 for order. BM25 abstained on all 8 unanswerable questions; both hybrid rows
+  answered one of them.
+
+Reproduce:
+
+```bash
+./benchmarks/fastapi-tutorial/fetch_corpus.sh
+python benchmarks/fastapi-tutorial/run.py
+```
 
 ## Design decisions
 
