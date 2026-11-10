@@ -5,7 +5,15 @@ All notable changes are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+- nDCG could exceed 1 when one gold span overlapped several chunks.
+
 ### Added
+- Milestone 4: evaluation. Gold question sets whose evidence is a verbatim quote
+  resolved to a character span; recall, precision and nDCG at k, MRR, citation precision,
+  fabricated citations, supported-sentence share, hallucination and abstention; a harness
+  that runs configurations on the same questions and reports means with bootstrap
+  intervals; and a FastAPI tutorial benchmark (44 questions) with published results.
 - Milestone 3: re-ranking and generation. A `Reranker` protocol with a deterministic
   `TermProximityReranker` baseline and `RerankingRetriever`; `build_prompt`, which labels
   passages `[P1]`, `[P2]`, ... within a token budget; `parse_answer`, which resolves

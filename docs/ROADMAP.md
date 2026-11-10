@@ -10,7 +10,7 @@ Each milestone lands on its own branch with tests and is merged when complete. C
 - [x] **M3: Re-ranking and generation** (Oct 30 to Nov 2). Cross-encoder re-ranker
       interface, prompt construction with passage IDs, answers with citations, a
       deterministic stub backend for tests.
-- [ ] **M4: Evaluation harness** (Nov 3 to Nov 6). Question sets with gold passages,
+- [x] **M4: Evaluation harness** (Nov 3 to Nov 6). Question sets with gold passages,
       recall@k, MRR and nDCG, citation precision, faithfulness and hallucination rate,
       comparison report across configurations.
 - [ ] **M5: Service** (Nov 7 to Nov 9). FastAPI endpoints for indexing, querying and
