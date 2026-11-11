@@ -1,9 +1,11 @@
 from pathlib import Path
 
 import pytest
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 from rag_eval.service import create_app
+from rag_eval.service.app import _resolve
 
 
 @pytest.fixture
@@ -43,8 +45,10 @@ def test_unrelated_question_abstains(client: TestClient) -> None:
     assert body["citations"] == []
 
 
-def test_paths_outside_the_data_root_are_refused(client: TestClient) -> None:
-    assert client.post("/corpora/..").status_code == 404
+def test_paths_outside_the_data_root_are_refused(client: TestClient, tmp_path: Path) -> None:
+    # The HTTP client normalizes "/corpora/.." away, so check the resolver directly.
+    with pytest.raises(HTTPException):
+        _resolve(tmp_path / "bees", "..")
     assert client.post("/corpora/missing").status_code == 404
 
 
@@ -94,3 +98,10 @@ def test_evaluate_rejects_quotes_that_are_not_in_the_corpus(client: TestClient) 
         "/corpora/bees/evaluate", json={"questions": bad, "configs": [{"name": "x"}]}
     )
     assert response.status_code == 422
+
+
+def test_inspector_page_is_served(client: TestClient) -> None:
+    page = client.get("/")
+    assert page.status_code == 200
+    assert "rag-eval inspector" in page.text
+    assert 'fetch("corpora")' in page.text

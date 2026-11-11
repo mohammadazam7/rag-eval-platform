@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rag-eval inspector</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; color: #1d2433; }
+  form { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  input[type=text] { flex: 1 1 320px; padding: .45rem .6rem; }
+  select, button { padding: .45rem .6rem; }
+  .answer { padding: .8rem 1rem; background: #f3f5f9; border-radius: 6px; white-space: pre-wrap; }
+  .abstain { color: #8a4b00; }
+  ol { padding-left: 1.2rem; }
+  li { margin-bottom: .7rem; }
+  .meta { color: #5b6476; font-size: 13px; }
+  .cited { border-left: 3px solid #2f6fdf; padding-left: .5rem; }
+</style>
+</head>
+<body>
+<h1>rag-eval inspector</h1>
+<p class="meta">Ask an indexed corpus a question and see what was retrieved and what the answer cites.</p>
+<form id="ask">
+  <select id="corpus" aria-label="Corpus"></select>
+  <input type="text" id="question" placeholder="Question" required aria-label="Question">
+  <select id="retriever" aria-label="Retriever">
+    <option value="hybrid">hybrid</option><option value="bm25">bm25</option><option value="dense">dense</option>
+  </select>
+  <label><input type="checkbox" id="rerank"> re-rank</label>
+  <button>Ask</button>
+</form>
+<div id="out"></div>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+fetch("corpora").then((r) => r.json()).then((list) => {
+  if (!list.length) { $("out").innerHTML = '<p class="meta">No corpus indexed yet. POST /corpora/&lt;folder&gt; first.</p>'; }
+  for (const c of list) $("corpus").add(new Option(`${c.name} (${c.chunks} chunks)`, c.name));
+});
+
+$("ask").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const res = await fetch(`corpora/${encodeURIComponent($("corpus").value)}/ask`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question: $("question").value, retriever: $("retriever").value, rerank: $("rerank").checked }),
+  });
+  const body = await res.json();
+  if (!res.ok) { $("out").innerHTML = `<p class="abstain">${esc(String(body.detail))}</p>`; return; }
+  const cited = new Set(body.citations.map((c) => `${c.doc_id}:${c.start}`));
+  $("out").innerHTML =
+    `<div class="answer ${body.abstained ? "abstain" : ""}">${esc(body.answer)}</div>` +
+    `<h2>Retrieved</h2><ol>` +
+    body.retrieved.map((p) => `<li class="${cited.has(`${p.doc_id}:${p.start}`) ? "cited" : ""}">` +
+      `<span class="meta">${esc(p.doc_id)} [${p.start}, ${p.end}) score ${p.score.toFixed(3)}` +
+      `${cited.has(`${p.doc_id}:${p.start}`) ? " (cited)" : ""}</span><br>${esc(p.text)}</li>`).join("") +
+    `</ol>`;
+});
+</script>
+</body>
+</html>

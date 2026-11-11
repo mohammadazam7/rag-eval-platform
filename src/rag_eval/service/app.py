@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 from rag_eval.answering import Answerer
@@ -74,6 +75,7 @@ class PassageOut(BaseModel):
     start: int
     end: int
     score: float
+    text: str
 
 
 class AskResponse(BaseModel):
@@ -132,6 +134,10 @@ def create_app(data_root: Path | None = None) -> FastAPI:
             raise HTTPException(404, f"corpus {name!r} is not indexed; POST /corpora/{name}")
         return corpora[name]
 
+    @app.get("/", response_class=HTMLResponse, include_in_schema=False)
+    def inspector() -> str:
+        return (Path(__file__).parent / "static" / "index.html").read_text(encoding="utf-8")
+
     @app.get("/healthz")
     def healthz() -> dict[str, str]:
         return {"status": "ok"}
@@ -188,7 +194,9 @@ def create_app(data_root: Path | None = None) -> FastAPI:
             ],
             unknown_labels=list(result.answer.unknown_labels),
             retrieved=[
-                PassageOut(doc_id=ch.doc_id, start=ch.start, end=ch.end, score=float(score))
+                PassageOut(
+                    doc_id=ch.doc_id, start=ch.start, end=ch.end, score=float(score), text=ch.text
+                )
                 for ch, score in result.retrieved
             ],
         )
