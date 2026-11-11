@@ -9,6 +9,7 @@ a benchmark and keeps the service free of a database.
 from __future__ import annotations
 
 import logging
+import math
 import os
 import time
 from dataclasses import dataclass, field
@@ -22,6 +23,8 @@ from rag_eval.answering import Answerer
 from rag_eval.chunking import SentenceChunker
 from rag_eval.documents import Document
 from rag_eval.embeddings import DenseRetriever, HashingEmbedder
+from rag_eval.evaluation.dataset import GoldSetError, parse_questions
+from rag_eval.evaluation.harness import REPORT_METRICS, evaluate
 from rag_eval.generation import ExtractiveStubGenerator
 from rag_eval.loaders import iter_corpus
 from rag_eval.rerank import TermProximityReranker
@@ -80,6 +83,36 @@ class AskResponse(BaseModel):
     citations: list[CitationOut]
     unknown_labels: list[str]
     retrieved: list[PassageOut]
+
+
+class RunConfig(BaseModel):
+    name: str = Field(min_length=1, max_length=60)
+    retriever: RetrieverName = "hybrid"
+    rerank: bool = False
+
+
+class EvaluateRequest(BaseModel):
+    questions: list[dict[str, object]] = Field(min_length=1, max_length=500)
+    configs: list[RunConfig] = Field(min_length=1, max_length=8)
+    k: int = Field(4, ge=1, le=20)
+
+
+class EstimateOut(BaseModel):
+    mean: float | None
+    low: float | None
+    high: float | None
+    n: int
+
+
+class RunOut(BaseModel):
+    name: str
+    metrics: dict[str, EstimateOut]
+
+
+def _finite(x: float) -> float | None:
+    # NaN means "not defined for these questions" (for example no answerable ones);
+    # JSON has no NaN, so it becomes null.
+    return None if math.isnan(x) else x
 
 
 def _resolve(root: Path, name: str) -> Path:
@@ -159,5 +192,30 @@ def create_app(data_root: Path | None = None) -> FastAPI:
                 for ch, score in result.retrieved
             ],
         )
+
+    @app.post("/corpora/{name}/evaluate")
+    def run_evaluation(name: str, request: EvaluateRequest) -> list[RunOut]:
+        c = corpus(name)
+        try:
+            questions = parse_questions(request.questions, c.documents)
+        except GoldSetError as err:
+            raise HTTPException(422, str(err)) from err
+        out = []
+        for cfg in request.configs:
+            answerer = Answerer(
+                c.retrievers[cfg.retriever],
+                ExtractiveStubGenerator(),
+                reranker=TermProximityReranker() if cfg.rerank else None,
+                k=request.k,
+            )
+            run = evaluate(cfg.name, answerer, questions)
+            metrics = {}
+            for metric in REPORT_METRICS:
+                est = run.estimate(metric)
+                metrics[metric] = EstimateOut(
+                    mean=_finite(est.mean), low=_finite(est.low), high=_finite(est.high), n=est.n
+                )
+            out.append(RunOut(name=cfg.name, metrics=metrics))
+        return out
 
     return app

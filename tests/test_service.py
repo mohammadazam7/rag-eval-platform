@@ -59,3 +59,38 @@ def test_request_validation(client: TestClient) -> None:
     assert client.post("/corpora/bees/ask", json={"question": ""}).status_code == 422
     assert client.post("/corpora/bees/ask", json={"question": "x", "k": 0}).status_code == 422
     assert client.get("/healthz").json() == {"status": "ok"}
+
+
+def test_evaluate_compares_configs_on_the_same_questions(client: TestClient) -> None:
+    client.post("/corpora/bees")
+    questions = [
+        {
+            "id": "q1",
+            "question": "How do bees tell others where food is?",
+            "evidence": [{"doc_id": "dance.md", "quote": "waggle dance"}],
+        },
+        {"id": "q2", "question": "What port does Redis listen on?", "evidence": []},
+    ]
+    runs = client.post(
+        "/corpora/bees/evaluate",
+        json={
+            "questions": questions,
+            "configs": [
+                {"name": "bm25", "retriever": "bm25"},
+                {"name": "dense", "retriever": "dense"},
+            ],
+        },
+    ).json()
+    assert [r["name"] for r in runs] == ["bm25", "dense"]
+    assert runs[0]["metrics"]["recall@5"] == {"mean": 1.0, "low": 1.0, "high": 1.0, "n": 1}
+
+
+def test_evaluate_rejects_quotes_that_are_not_in_the_corpus(client: TestClient) -> None:
+    client.post("/corpora/bees")
+    bad = [
+        {"id": "q1", "question": "?", "evidence": [{"doc_id": "dance.md", "quote": "no such text"}]}
+    ]
+    response = client.post(
+        "/corpora/bees/evaluate", json={"questions": bad, "configs": [{"name": "x"}]}
+    )
+    assert response.status_code == 422
