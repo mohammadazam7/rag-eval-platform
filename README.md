@@ -81,6 +81,21 @@ Reproduce:
 python benchmarks/fastapi-tutorial/run.py
 ```
 
+## Run it as a service
+
+```bash
+pip install -e ".[service]"
+RAG_EVAL_DATA_ROOT=data/raw uvicorn "rag_eval.service:create_app" --factory
+curl -X POST localhost:8000/corpora/fastapi-tutorial
+curl -X POST localhost:8000/corpora/fastapi-tutorial/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question": "When do background tasks run?", "retriever": "bm25"}'
+```
+
+Open `http://localhost:8000/` to see the answer next to the passages it was built from,
+with the cited ones marked. `POST /corpora/{name}/evaluate` runs the same harness as
+`benchmarks/fastapi-tutorial/run.py` on questions you send in the request.
+
 ## Design decisions
 
 - **Stable passage identity.** A passage ID is derived from the document ID and the

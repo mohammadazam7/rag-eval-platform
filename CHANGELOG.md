@@ -9,6 +9,10 @@ All notable changes are recorded here. The format follows
 - nDCG could exceed 1 when one gold span overlapped several chunks.
 
 ### Added
+- Milestone 5: an HTTP service (`pip install rag-eval[service]`). Index a folder under
+  `RAG_EVAL_DATA_ROOT`, ask questions with a choice of retriever and re-ranking and get
+  cited answers back, run the evaluation harness over posted gold questions, and inspect
+  answers and retrieved passages on a one-page viewer at `/`.
 - Milestone 4: evaluation. Gold question sets whose evidence is a verbatim quote
   resolved to a character span; recall, precision and nDCG at k, MRR, citation precision,
   fabricated citations, supported-sentence share, hallucination and abstention; a harness
