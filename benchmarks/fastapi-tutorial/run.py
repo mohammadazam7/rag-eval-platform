@@ -17,7 +17,7 @@ from pathlib import Path
 
 from rag_eval.answering import Answerer
 from rag_eval.chunking import SentenceChunker
-from rag_eval.embeddings import DenseRetriever, HashingEmbedder
+from rag_eval.embeddings import DenseRetriever, HashingEmbedder, WordVectorEmbedder
 from rag_eval.evaluation.dataset import load_questions
 from rag_eval.evaluation.harness import RunResult, evaluate, report
 from rag_eval.generation import ExtractiveStubGenerator
@@ -45,6 +45,11 @@ def main() -> None:
     dense = DenseRetriever(chunks, HashingEmbedder(512))
     hybrid = HybridRetriever([bm25, dense])
     gen = ExtractiveStubGenerator()
+    try:
+        words = DenseRetriever(chunks, WordVectorEmbedder.from_spacy())
+    except (ImportError, OSError):
+        log.warning("spaCy vectors not installed; skipping the word vector rows")
+        words = None
     configs: dict[str, Callable[[], Answerer]] = {
         "BM25": lambda: Answerer(bm25, gen, k=4),
         "Dense (hashing, 512)": lambda: Answerer(dense, gen, k=4),
@@ -53,6 +58,11 @@ def main() -> None:
             hybrid, gen, reranker=TermProximityReranker(), k=4, rerank_depth=30
         ),
     }
+
+    if words is not None:
+        word_hybrid = HybridRetriever([bm25, words])
+        configs["Dense (word vectors)"] = lambda: Answerer(words, gen, k=4)
+        configs["Hybrid (BM25 + word vectors)"] = lambda: Answerer(word_hybrid, gen, k=4)
 
     runs: list[RunResult] = []
     timings: dict[str, float] = {}

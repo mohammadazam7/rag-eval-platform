@@ -53,10 +53,12 @@ backend, so the rows differ only in retrieval. Mean with 95% bootstrap interval.
 
 | Configuration | recall@5 | MRR | nDCG@10 | Correct abstention | ms per question |
 |---|---|---|---|---|---|
-| BM25 | 0.81 [0.67, 0.92] | 0.63 [0.51, 0.75] | 0.71 [0.60, 0.80] | 0.75 [0.61, 0.89] | 9.3 |
-| Dense (hashing, 512) | 0.53 [0.36, 0.69] | 0.42 [0.28, 0.57] | 0.48 [0.35, 0.62] | 0.70 [0.57, 0.84] | 1.1 |
-| Hybrid (RRF) | 0.75 [0.61, 0.89] | 0.52 [0.40, 0.65] | 0.60 [0.48, 0.72] | 0.70 [0.57, 0.84] | 9.7 |
-| Hybrid + re-rank | 0.67 [0.50, 0.81] | 0.56 [0.43, 0.69] | 0.63 [0.51, 0.75] | 0.61 [0.48, 0.75] | 13.2 |
+| BM25 | 0.81 [0.67, 0.92] | 0.63 [0.51, 0.75] | 0.71 [0.60, 0.80] | 0.75 [0.61, 0.89] | 6.3 |
+| Dense (hashing, 512) | 0.53 [0.36, 0.69] | 0.42 [0.28, 0.57] | 0.48 [0.35, 0.62] | 0.70 [0.57, 0.84] | 0.8 |
+| Hybrid (RRF) | 0.75 [0.61, 0.89] | 0.52 [0.40, 0.65] | 0.60 [0.48, 0.72] | 0.70 [0.57, 0.84] | 7.4 |
+| Hybrid + re-rank | 0.67 [0.50, 0.81] | 0.56 [0.43, 0.69] | 0.63 [0.51, 0.75] | 0.61 [0.48, 0.75] | 8.0 |
+| Dense (word vectors) | 0.42 [0.25, 0.58] | 0.28 [0.17, 0.42] | 0.33 [0.20, 0.46] | 0.55 [0.39, 0.68] | 0.6 |
+| Hybrid (BM25 + word vectors) | 0.61 [0.44, 0.78] | 0.49 [0.36, 0.63] | 0.56 [0.43, 0.69] | 0.68 [0.55, 0.82] | 7.6 |
 
 Measured on x86_64 with 2 vCPUs, Python 3.13, one process. Full table with citation and
 grounding metrics: [benchmarks/fastapi-tutorial/RESULTS.md](benchmarks/fastapi-tutorial/RESULTS.md).
@@ -66,6 +68,11 @@ What the numbers say:
 - On short reference prose where questions reuse the documentation's own terms, BM25
   is the strongest single retriever. The hashing embedder is a lexical baseline, not a
   learned model, and fusing it with BM25 costs ranking quality instead of adding it.
+- Learned vectors are not automatically better. Averaging spaCy's 300 dimension word
+  vectors (`en_core_web_md`, trained on web text) did worse than hashing here, probably
+  because an average of word vectors blurs the exact API names these questions turn
+  on. A contextual sentence encoder is the comparison that matters, and I have not run
+  one on this benchmark yet.
 - The intervals are wide at 44 questions. Hybrid and BM25 overlap on every metric, so
   the honest conclusion is "no evidence hybrid helps here", not "hybrid is worse".
 - Re-ranking moves gold chunks up (MRR and nDCG rise over plain hybrid) but the
@@ -78,6 +85,8 @@ Reproduce:
 
 ```bash
 ./benchmarks/fastapi-tutorial/fetch_corpus.sh
+# optional, for the word vector rows:
+pip install -e ".[vectors]" https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl
 python benchmarks/fastapi-tutorial/run.py
 ```
 
