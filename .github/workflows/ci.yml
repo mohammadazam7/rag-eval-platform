@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - run: pip install -e ".[dev]"
+      - run: pip install -r requirements-dev.lock && pip install -e . --no-deps
       - run: ruff check .
       - run: ruff format --check .
       - run: mypy src
@@ -40,5 +40,5 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
           cache: pip
-      - run: pip install -e ".[dev]"
+      - run: pip install -r requirements-dev.lock && pip install -e . --no-deps
       - run: pytest --cov=rag_eval --cov-report=term-missing
