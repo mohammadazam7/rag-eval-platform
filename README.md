@@ -105,6 +105,20 @@ Open `http://localhost:8000/` to see the answer next to the passages it was buil
 with the cited ones marked. `POST /corpora/{name}/evaluate` runs the same harness as
 `benchmarks/fastapi-tutorial/run.py` on questions you send in the request.
 
+## Retrieval Galaxy
+
+A small React and Three.js page in `web/` lays out the FastAPI tutorial chunks in 3D by
+embedding similarity (PCA on the hashing embedder's vectors) and highlights which ones
+BM25 and the hybrid retriever found for one benchmark question, against its gold
+evidence. It falls back to a plain, keyboard-navigable table without WebGL or when
+reduced motion is requested; the table carries every piece of information the 3D view
+does, so nothing is 3D-only.
+
+```bash
+python scripts/export_gallery_data.py      # writes web/public/data.json
+cd web && npm install && npm run dev
+```
+
 ## Design decisions
 
 - **Stable passage identity.** A passage ID is derived from the document ID and the
