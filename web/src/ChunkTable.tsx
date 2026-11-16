@@ -1,4 +1,4 @@
-import { useCallback, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, type KeyboardEvent } from "react";
 
 import { chunkStatus, hitRank, orderedChunks } from "./gallery";
 import type { GalleryData, RetrievalMethod } from "./types";
@@ -23,6 +23,12 @@ const STATUS_LABEL: Record<string, string> = {
  * rest of the time, so neither view can show something the other does not. */
 export function ChunkTable({ data, method, selectedId, onSelect }: Props) {
   const rows = orderedChunks(data, method);
+  const selectedRow = useRef<HTMLTableRowElement>(null);
+
+  // A chunk picked in the 3D view may be far down the table: bring its row into view.
+  useEffect(() => {
+    selectedRow.current?.scrollIntoView?.({ block: "nearest" });
+  }, [selectedId]);
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent<HTMLTableRowElement>, chunkId: string) => {
@@ -55,13 +61,14 @@ export function ChunkTable({ data, method, selectedId, onSelect }: Props) {
           return (
             <tr
               key={chunk.id}
+              ref={selected ? selectedRow : undefined}
               tabIndex={0}
               aria-selected={selected}
               data-status={status}
               onClick={() => onSelect(chunk.id)}
               onKeyDown={(event) => onKeyDown(event, chunk.id)}
             >
-              <td>{rank ?? "—"}</td>
+              <td>{rank ?? "-"}</td>
               <td>{chunk.doc_id}</td>
               <td>{chunk.preview}</td>
               <td>{STATUS_LABEL[status]}</td>

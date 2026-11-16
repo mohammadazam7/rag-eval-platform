@@ -107,6 +107,8 @@ with the cited ones marked. `POST /corpora/{name}/evaluate` runs the same harnes
 
 ## Retrieval Galaxy
 
+![The Retrieval Galaxy page: chunks in 3D on the left, the ranked table on the right](docs/images/retrieval-galaxy.png)
+
 A small React and Three.js page in `web/` lays out the FastAPI tutorial chunks in 3D by
 embedding similarity (PCA on the hashing embedder's vectors) and highlights which ones
 BM25 and the hybrid retriever found for one benchmark question, against its gold
