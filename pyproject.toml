@@ -33,6 +33,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra --strict-markers"
+pythonpath = ["scripts"]
 
 [tool.ruff]
 line-length = 100

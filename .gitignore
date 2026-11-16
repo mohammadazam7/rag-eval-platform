@@ -18,5 +18,8 @@ runs/
 
 .env
 .DS_Store
+
+# web/ (Node)
+node_modules/
 .idea/
 .vscode/
