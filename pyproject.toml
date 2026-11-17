@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rag-eval"
-version = "0.1.0"
+version = "1.0.0"
 description = "Retrieval-augmented question answering with citations, and an evaluation harness for retrieval quality, faithfulness and hallucination rate."
 readme = "README.md"
 requires-python = ">=3.11"

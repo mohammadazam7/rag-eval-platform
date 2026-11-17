@@ -5,10 +5,18 @@ All notable changes are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-17
+
 ### Fixed
 - nDCG could exceed 1 when one gold span overlapped several chunks.
 
 ### Added
+- Milestone 6: the Retrieval Galaxy, a web page (`web/`) that lays the benchmark corpus
+  out in 3D by embedding similarity and shows which chunks each retriever found for a
+  question against its gold evidence, with a keyboard-navigable table that carries the
+  same information without WebGL; `scripts/export_gallery_data.py`, which produces its
+  data; a word vector embedder backed by spaCy with its own rows in the benchmark;
+  architecture notes; and a pinned development lock file.
 - Milestone 5: an HTTP service (`pip install rag-eval[service]`). Index a folder under
   `RAG_EVAL_DATA_ROOT`, ask questions with a choice of retriever and re-ranking and get
   cited answers back, run the evaluation harness over posted gold questions, and inspect

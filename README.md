@@ -6,9 +6,10 @@ Retrieval-augmented question answering over a document collection, with answers 
 their sources, and an evaluation harness that measures whether a change to chunking,
 retrieval or generation made the system better or worse.
 
-> **Status:** in development. Chunking, retrieval, re-ranking, cited answers and the
-> evaluation harness are in place, with measured results on a public corpus below. The
-> HTTP service is next. See the [roadmap](docs/ROADMAP.md) for milestone dates.
+> **Status:** v1.0. Chunking, retrieval, re-ranking, cited answers, the evaluation
+> harness and the HTTP service are in place, with measured results on a public corpus
+> below. [Retrieval Galaxy](https://mohammadazam7.github.io/rag-eval-platform/) shows the
+> benchmark corpus and what each retriever finds.
 
 ## Overview
 
