@@ -15,5 +15,6 @@ Each milestone lands on its own branch with tests and is merged when complete. C
       comparison report across configurations.
 - [x] **M5: Service** (Nov 7 to Nov 9). FastAPI endpoints for indexing, querying and
       running evaluations, and a small web page for inspecting answers and citations.
-- [ ] **M6: v1.0** (Nov 10 to Nov 12). Published results with the hardware they were
-      measured on, architecture notes, CHANGELOG and release.
+- [x] **M6: v1.0** (Nov 10 to Nov 17, five days later than planned). Published results
+      with the hardware they were measured on, architecture notes, the Retrieval Galaxy
+      page, CHANGELOG and release.

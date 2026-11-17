@@ -10,7 +10,7 @@ evaluation code paths can be tested end to end without downloading a model.
 from __future__ import annotations
 
 import hashlib
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from itertools import pairwise
 from typing import Protocol
 
@@ -48,6 +48,43 @@ class HashingEmbedder:
             for feature in features:
                 index, sign = self._bucket(feature)
                 out[row, index] += sign
+        norms = np.linalg.norm(out, axis=1, keepdims=True)
+        np.divide(out, norms, out=out, where=norms > 0)
+        return out
+
+
+class WordVectorEmbedder:
+    """Mean of pretrained word vectors, normalized. A learned but context-free baseline.
+
+    ``lookup`` maps a lowercase token to its vector or ``None``; tokens without a
+    vector are skipped, and a text with none at all embeds to zeros (it then matches
+    nothing rather than everything).
+    """
+
+    def __init__(self, lookup: Callable[[str], Matrix | None], dim: int) -> None:
+        self.lookup = lookup
+        self.dim = dim
+
+    @classmethod
+    def from_spacy(cls, model: str = "en_core_web_md") -> WordVectorEmbedder:
+        """Vectors from an installed spaCy pipeline (``pip install rag-eval[vectors]``)."""
+        import spacy
+
+        nlp = spacy.load(model, exclude=["tagger", "parser", "ner", "lemmatizer", "senter"])
+        vectors = nlp.vocab.vectors
+
+        def lookup(token: str) -> Matrix | None:
+            row = vectors.find(key=nlp.vocab.strings.add(token))
+            return None if row < 0 else np.asarray(vectors.data[row], dtype=np.float32)
+
+        return cls(lookup, int(vectors.shape[1]))
+
+    def embed(self, texts: Sequence[str]) -> Matrix:
+        out = np.zeros((len(texts), self.dim), dtype=np.float32)
+        for row, text in enumerate(texts):
+            found = [v for v in (self.lookup(t) for t in tokenize(text)) if v is not None]
+            if found:
+                out[row] = np.mean(found, axis=0)
         norms = np.linalg.norm(out, axis=1, keepdims=True)
         np.divide(out, norms, out=out, where=norms > 0)
         return out
