@@ -5,6 +5,11 @@ All notable changes are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+- `--k` option for the FastAPI benchmark runner, so the answer budget can be changed
+  without editing the script; the results header records which budget produced it.
+  Thanks to @ompanda01 (#4).
+
 ## [1.0.0] - 2026-11-17
 
 ### Fixed

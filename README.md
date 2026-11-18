@@ -89,6 +89,8 @@ Reproduce:
 # optional, for the word vector rows:
 pip install -e ".[vectors]" https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl
 python benchmarks/fastapi-tutorial/run.py
+# answer from the top 8 chunks instead of 4; retrieval metrics do not change, answer metrics do
+python benchmarks/fastapi-tutorial/run.py --k 8 --out /tmp/results-k8.md
 ```
 
 ## Run it as a service
