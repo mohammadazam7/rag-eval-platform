@@ -1,9 +1,9 @@
 """Compare retrieval configurations on the FastAPI tutorial benchmark.
 
-Usage: python benchmarks/fastapi-tutorial/run.py [CORPUS_DIR] [--out RESULTS.md]
+Usage: python benchmarks/fastapi-tutorial/run.py [CORPUS_DIR] [--out RESULTS.md] [--k 4]
 
 Every configuration shares the chunker (sentence windows of up to 80 tokens), the
-answer budget (top 4 chunks) and the extractive backend, so the rows differ only in
+answer budget (top k chunks) and the extractive backend, so the rows differ only in
 how candidates are retrieved and ordered.
 """
 
@@ -33,6 +33,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("corpus", nargs="?", type=Path, default=Path("data/raw/fastapi-tutorial"))
     parser.add_argument("--out", type=Path, default=HERE / "RESULTS.md")
+    parser.add_argument(
+        "--k", type=int, default=4, help="Number of chunks to pass to the answerer (default: 4)"
+    )
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(message)s")
 
@@ -51,11 +54,11 @@ def main() -> None:
         log.warning("spaCy vectors not installed; skipping the word vector rows")
         words = None
     configs: dict[str, Callable[[], Answerer]] = {
-        "BM25": lambda: Answerer(bm25, gen, k=4),
-        "Dense (hashing, 512)": lambda: Answerer(dense, gen, k=4),
-        "Hybrid (RRF)": lambda: Answerer(hybrid, gen, k=4),
+        "BM25": lambda: Answerer(bm25, gen, k=args.k),
+        "Dense (hashing, 512)": lambda: Answerer(dense, gen, k=args.k),
+        "Hybrid (RRF)": lambda: Answerer(hybrid, gen, k=args.k),
         "Hybrid + re-rank": lambda: Answerer(
-            hybrid, gen, reranker=TermProximityReranker(), k=4, rerank_depth=30
+            hybrid, gen, reranker=TermProximityReranker(), k=args.k, rerank_depth=30
         ),
     }
 
@@ -79,7 +82,7 @@ def main() -> None:
         f"Corpus: {len(docs)} Markdown files from the FastAPI tutorial (MIT licence), pinned in",
         f"`fetch_corpus.sh`, split into {len(chunks)} chunks. Questions: {len(questions)}",
         f"({answerable} answerable with a quoted gold span, {len(questions) - answerable}"
-        " unanswerable from this corpus).",
+        f" unanswerable from this corpus). Answer budget: top {args.k} chunks (`k={args.k}`).",
         "",
         report(runs).rstrip(),
         "",
