@@ -34,10 +34,8 @@ def main() -> None:
     parser.add_argument("corpus", nargs="?", type=Path, default=Path("data/raw/fastapi-tutorial"))
     parser.add_argument("--out", type=Path, default=HERE / "RESULTS.md")
     parser.add_argument(
-        "--k",
-        type=int,
-        default=4,
-        help="Number of chunks to pass to the answerer (default: 4)")
+        "--k", type=int, default=4, help="Number of chunks to pass to the answerer (default: 4)"
+    )
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(message)s")
 
