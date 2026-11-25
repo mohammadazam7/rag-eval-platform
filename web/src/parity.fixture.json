@@ -1,0 +1,1171 @@
+[
+ {
+  "id": "a01",
+  "question": "When do background tasks run?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "background-tasks.md#74e854e6a7",
+    "score": 16.352968
+   },
+   {
+    "chunk_id": "background-tasks.md#494fcde18a",
+    "score": 15.948779
+   },
+   {
+    "chunk_id": "middleware.md#eb8969227c",
+    "score": 15.321171
+   },
+   {
+    "chunk_id": "background-tasks.md#acc1428203",
+    "score": 15.227509
+   }
+  ],
+  "answer": "FastAPI knows what to do in each case and how to reuse the same object, so that all the background tasks are merged together and are run in the background afterwards: [P1]. You can define background tasks to be run *after* returning a response [P2].",
+  "cited": [
+   "background-tasks.md#74e854e6a7",
+   "background-tasks.md#494fcde18a"
+  ]
+ },
+ {
+  "id": "a02",
+  "question": "Can a background task function be a normal def instead of async def?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "background-tasks.md#acc1428203",
+    "score": 35.159644
+   },
+   {
+    "chunk_id": "background-tasks.md#cb206250d5",
+    "score": 33.547424
+   },
+   {
+    "chunk_id": "dependencies/index.md#232416fc9a",
+    "score": 29.437848
+   },
+   {
+    "chunk_id": "first-steps.md#2c173f4cf2",
+    "score": 26.368535
+   }
+  ],
+  "answer": "It can be an async def or normal def function, FastAPI will know how to handle it correctly [P2]. You could also define it as a normal function instead of async def: [P4].",
+  "cited": [
+   "background-tasks.md#cb206250d5",
+   "first-steps.md#2c173f4cf2"
+  ]
+ },
+ {
+  "id": "a03",
+  "question": "What is the Flask equivalent of splitting a FastAPI app across files with routers?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "bigger-applications.md#e3ae29309c",
+    "score": 18.521795
+   },
+   {
+    "chunk_id": "bigger-applications.md#ce72013e1f",
+    "score": 15.355983
+   },
+   {
+    "chunk_id": "bigger-applications.md#934864d006",
+    "score": 13.616837
+   },
+   {
+    "chunk_id": "bigger-applications.md#ba75787c90",
+    "score": 12.613637
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "a04",
+  "question": "Which package is Field imported from?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "body-fields.md#32e32765c8",
+    "score": 12.21351
+   },
+   {
+    "chunk_id": "body-fields.md#3c00cbc564",
+    "score": 12.079453
+   },
+   {
+    "chunk_id": "bigger-applications.md#ac86893601",
+    "score": 8.722559
+   },
+   {
+    "chunk_id": "bigger-applications.md#ba75787c90",
+    "score": 8.522838
+   }
+  ],
+  "answer": "Notice that Field is imported directly from pydantic, not from fastapi as are all the rest (Query, Path, Body, etc) [P1]. Notice that Field is imported directly from pydantic, not from fastapi as are all the rest (Query, Path, Body, etc) [P2].",
+  "cited": [
+   "body-fields.md#32e32765c8",
+   "body-fields.md#3c00cbc564"
+  ]
+ },
+ {
+  "id": "a05",
+  "question": "Which HTTP methods should be used to send a request body?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "cors.md#8c924afe46",
+    "score": 17.65893
+   },
+   {
+    "chunk_id": "body-updates.md#c2f9a46aba",
+    "score": 16.294457
+   },
+   {
+    "chunk_id": "body.md#a3c242b3bd",
+    "score": 15.367838
+   },
+   {
+    "chunk_id": "body.md#8ad9e50570",
+    "score": 13.649719
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "a06",
+  "question": "Is sending a body with a GET request supported?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "body.md#3055f2a59e",
+    "score": 18.344119
+   },
+   {
+    "chunk_id": "body.md#8ad9e50570",
+    "score": 10.216243
+   },
+   {
+    "chunk_id": "handling-errors.md#6e031a5f1d",
+    "score": 9.150678
+   },
+   {
+    "chunk_id": "body.md#a3c242b3bd",
+    "score": 8.79285
+   }
+  ],
+  "answer": "Sending a body with a GET request has an undefined behavior in the specifications, nevertheless, it is supported by FastAPI, only for very complex/extreme use cases [P1].",
+  "cited": [
+   "body.md#3055f2a59e"
+  ]
+ },
+ {
+  "id": "a07",
+  "question": "Why does the docs UI fail to send cookie parameters when I click Execute?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "cookie-params.md#ab102fb9c1",
+    "score": 18.473809
+   },
+   {
+    "chunk_id": "cookie-param-models.md#486d107491",
+    "score": 16.583268
+   },
+   {
+    "chunk_id": "cookie-param-models.md#5dd524efaf",
+    "score": 14.563978
+   },
+   {
+    "chunk_id": "schema-extra-example.md#b62795e79f",
+    "score": 13.074516
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "a08",
+  "question": "What happens if I declare a cookie parameter without using Cookie?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "cookie-params.md#d46e296c0b",
+    "score": 17.503742
+   },
+   {
+    "chunk_id": "cookie-param-models.md#218ba885ee",
+    "score": 17.138257
+   },
+   {
+    "chunk_id": "cookie-params.md#98edd84d21",
+    "score": 16.789305
+   },
+   {
+    "chunk_id": "query-param-models.md#ebc25e3a91",
+    "score": 16.497293
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "a09",
+  "question": "Does using a wildcard for allowed origins allow requests with credentials?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "cors.md#e04f3f1d16",
+    "score": 26.021425
+   },
+   {
+    "chunk_id": "cors.md#6b307398f7",
+    "score": 25.944014
+   },
+   {
+    "chunk_id": "cors.md#8c924afe46",
+    "score": 22.026647
+   },
+   {
+    "chunk_id": "cors.md#9698f28d6f",
+    "score": 20.954343
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "a10",
+  "question": "Which middleware configures CORS in a FastAPI application?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "cors.md#fbb28e9729",
+    "score": 16.412606
+   },
+   {
+    "chunk_id": "cors.md#4cb13cdcf1",
+    "score": 14.486133
+   },
+   {
+    "chunk_id": "middleware.md#a92c7f0b0d",
+    "score": 13.872728
+   },
+   {
+    "chunk_id": "middleware.md#a8e1df7327",
+    "score": 13.773098
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "a11",
+  "question": "How do I run dependencies whose return value I do not need in the path operation function?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "dependencies/dependencies-in-path-operation-decorators.md#87f4025369",
+    "score": 20.409234
+   },
+   {
+    "chunk_id": "first-steps.md#0ad70b6348",
+    "score": 19.258136
+   },
+   {
+    "chunk_id": "sql-databases.md#4a5a865f70",
+    "score": 17.466817
+   },
+   {
+    "chunk_id": "middleware.md#4df630b87e",
+    "score": 15.754521
+   }
+  ],
+  "answer": "In some cases you don't really need the return value of a dependency inside your *path operation function* [P1].",
+  "cited": [
+   "dependencies/dependencies-in-path-operation-decorators.md#87f4025369"
+  ]
+ },
+ {
+  "id": "a12",
+  "question": "When does the code after yield in a dependency run?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "dependencies/dependencies-with-yield.md#83b42de00d",
+    "score": 18.861174
+   },
+   {
+    "chunk_id": "dependencies/dependencies-with-yield.md#5095fbd276",
+    "score": 15.940111
+   },
+   {
+    "chunk_id": "dependencies/dependencies-with-yield.md#2fcaa367ef",
+    "score": 15.163585
+   },
+   {
+    "chunk_id": "dependencies/dependencies-with-yield.md#9d205ea00a",
+    "score": 14.831002
+   }
+  ],
+  "answer": "client ->> dep_req: Start request Note over dep_req: Run code up to yield dep_req ->> dep_func: Pass dependency Note over dep_func: Run code up to yield dep_func ->> operation: Run path operation with dependency operation ->> dep_func: Return from path operation Note over dep_func: Run code after yield Note over dep_func: ✅ Dependency closed dep_func ->> client: Send response to client Note over client: Response sent Note over dep_req: Run code after yield Note over dep_req: ✅ Dependency closed [P1]. FastAPI will make sure that the \"exit code\" in each dependency with yield is run in the correct order [P3].",
+  "cited": [
+   "dependencies/dependencies-with-yield.md#83b42de00d",
+   "dependencies/dependencies-with-yield.md#2fcaa367ef"
+  ]
+ },
+ {
+  "id": "a13",
+  "question": "How can I apply dependencies to every path operation in the application?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "dependencies/dependencies-in-path-operation-decorators.md#15e6a82f9a",
+    "score": 21.662968
+   },
+   {
+    "chunk_id": "dependencies/global-dependencies.md#9988c02b98",
+    "score": 18.30625
+   },
+   {
+    "chunk_id": "dependencies/global-dependencies.md#18401ee094",
+    "score": 16.975717
+   },
+   {
+    "chunk_id": "middleware.md#4ab16899f0",
+    "score": 14.662163
+   }
+  ],
+  "answer": "Next we will see how to add dependencies to the whole FastAPI application, so that they apply to each *path operation* [P1]. Similar to the way you can [add dependencies to the *path operation decorators*](dependencies-in-path-operation-decorators.md), you can add them to the FastAPI application [P2].",
+  "cited": [
+   "dependencies/dependencies-in-path-operation-decorators.md#15e6a82f9a",
+   "dependencies/global-dependencies.md#9988c02b98"
+  ]
+ },
+ {
+  "id": "a14",
+  "question": "What does jsonable_encoder do to a Pydantic model and a datetime?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "encoder.md#efaefab1ac",
+    "score": 24.109323
+   },
+   {
+    "chunk_id": "encoder.md#d131e7477e",
+    "score": 20.707811
+   },
+   {
+    "chunk_id": "encoder.md#8cf0f39b0b",
+    "score": 19.540272
+   },
+   {
+    "chunk_id": "body-updates.md#78e7dff6e7",
+    "score": 18.105513
+   }
+  ],
+  "answer": "In this example, it would convert the Pydantic model to a dict, and the datetime to a str [P2]. Convert the copied model to something that can be stored in your DB (for example, using the jsonable_encoder) [P4].",
+  "cited": [
+   "encoder.md#d131e7477e",
+   "body-updates.md#78e7dff6e7"
+  ]
+ },
+ {
+  "id": "a15",
+  "question": "Should I store user passwords in plaintext?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "extra-models.md#6a23acb203",
+    "score": 20.649655
+   },
+   {
+    "chunk_id": "extra-models.md#3006d82540",
+    "score": 19.3943
+   },
+   {
+    "chunk_id": "security/simple-oauth2.md#97609bdd94",
+    "score": 13.97401
+   },
+   {
+    "chunk_id": "response-model.md#8f600d308f",
+    "score": 12.723383
+   }
+  ],
+  "answer": "Never store user's plaintext passwords [P1]. Never store user's plaintext passwords [P2].",
+  "cited": [
+   "extra-models.md#6a23acb203",
+   "extra-models.md#3006d82540"
+  ]
+ },
+ {
+  "id": "a16",
+  "question": "Which Pydantic method returns a dict with the model's data?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "extra-models.md#73acff7a55",
+    "score": 24.610664
+   },
+   {
+    "chunk_id": "extra-models.md#368693702c",
+    "score": 21.041637
+   },
+   {
+    "chunk_id": "extra-models.md#2d648fc603",
+    "score": 15.115353
+   },
+   {
+    "chunk_id": "body-fields.md#a505ebde0a",
+    "score": 14.764573
+   }
+  ],
+  "answer": "Pydantic models have a .model_dump() method that returns a dict with the model's data [P1]. Pydantic models have a .model_dump() method that returns a dict with the model's data [P2].",
+  "cited": [
+   "extra-models.md#73acff7a55",
+   "extra-models.md#368693702c"
+  ]
+ },
+ {
+  "id": "a17",
+  "question": "How do I serve a built React or Vite frontend from FastAPI?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "frontend.md#9a9c781429",
+    "score": 25.481792
+   },
+   {
+    "chunk_id": "frontend.md#4db275b0f7",
+    "score": 19.394435
+   },
+   {
+    "chunk_id": "frontend.md#6e0f9abc61",
+    "score": 14.981572
+   },
+   {
+    "chunk_id": "frontend.md#6bd1ed779a",
+    "score": 13.06988
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "a18",
+  "question": "Which status code range is used for client errors?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "handling-errors.md#0faf23267a",
+    "score": 20.486484
+   },
+   {
+    "chunk_id": "handling-errors.md#ce7192fadd",
+    "score": 17.740332
+   },
+   {
+    "chunk_id": "response-status-code.md#4b5348e517",
+    "score": 17.111493
+   },
+   {
+    "chunk_id": "handling-errors.md#48720ef410",
+    "score": 15.8474
+   }
+  ],
+  "answer": "The status codes in the 400 range mean that there was an error from the client [P1]. In these cases, you would normally return an HTTP status code in the range of 400 (from 400 to 499) [P2].",
+  "cited": [
+   "handling-errors.md#0faf23267a",
+   "handling-errors.md#ce7192fadd"
+  ]
+ },
+ {
+  "id": "a19",
+  "question": "Which exception do I raise to return an HTTP error response?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "dependencies/dependencies-with-yield.md#bbce1d3d2b",
+    "score": 21.883901
+   },
+   {
+    "chunk_id": "dependencies/dependencies-with-yield.md#bfb28a5c26",
+    "score": 19.561932
+   },
+   {
+    "chunk_id": "dependencies/dependencies-with-yield.md#ffe7f8280e",
+    "score": 19.247929
+   },
+   {
+    "chunk_id": "handling-errors.md#2333c049c5",
+    "score": 18.538149
+   }
+  ],
+  "answer": "HTTPException) opt handle dep -->> dep: Can catch exception, raise a new HTTPException, raise other exception end handler -->> client: HTTP error response end [P1]. Note over client,operation: Can raise exceptions, including HTTPException client ->> dep: Start request Note over dep: Run code up to yield opt raise Exception dep -->> handler: Raise Exception handler -->> client: HTTP error response end dep ->> operation: Run dependency, e.g [P3].",
+  "cited": [
+   "dependencies/dependencies-with-yield.md#bbce1d3d2b",
+   "dependencies/dependencies-with-yield.md#ffe7f8280e"
+  ]
+ },
+ {
+  "id": "a20",
+  "question": "How do I reject requests that send extra headers I did not declare?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "sql-databases.md#4a5a865f70",
+    "score": 14.157888
+   },
+   {
+    "chunk_id": "schema-extra-example.md#b62795e79f",
+    "score": 14.023711
+   },
+   {
+    "chunk_id": "cookie-param-models.md#f8164833af",
+    "score": 13.816804
+   },
+   {
+    "chunk_id": "testing.md#871bd2f9f4",
+    "score": 12.805993
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "a21",
+  "question": "Are the tutorial code examples tested?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "index.md#dd74feb717",
+    "score": 13.258822
+   },
+   {
+    "chunk_id": "index.md#d419160de5",
+    "score": 11.577602
+   },
+   {
+    "chunk_id": "body.md#85fa1c2833",
+    "score": 9.403874
+   },
+   {
+    "chunk_id": "schema-extra-example.md#f398e8b4be",
+    "score": 8.91212
+   }
+  ],
+  "answer": "All the code blocks can be copied and used directly (they are actually tested Python files) [P1]. All the code blocks can be copied and used directly (they are actually tested Python files) [P2].",
+  "cited": [
+   "index.md#dd74feb717",
+   "index.md#d419160de5"
+  ]
+ },
+ {
+  "id": "a22",
+  "question": "Can the API description field contain Markdown?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "schema-extra-example.md#eda2e35a0a",
+    "score": 16.467288
+   },
+   {
+    "chunk_id": "schema-extra-example.md#e014e7ae9d",
+    "score": 16.343029
+   },
+   {
+    "chunk_id": "metadata.md#9e64d8b5c9",
+    "score": 14.088472
+   },
+   {
+    "chunk_id": "metadata.md#fc46a3a5a5",
+    "score": 13.938032
+   }
+  ],
+  "answer": "description: A long description that can contain Markdown text [P1]. description: A long description that can contain Markdown text [P2].",
+  "cited": [
+   "schema-extra-example.md#eda2e35a0a",
+   "schema-extra-example.md#e014e7ae9d"
+  ]
+ },
+ {
+  "id": "a23",
+  "question": "Does the exit code of a yield dependency run before or after middleware?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "middleware.md#eb8969227c",
+    "score": 25.694991
+   },
+   {
+    "chunk_id": "dependencies/dependencies-with-yield.md#e88f311a43",
+    "score": 22.808664
+   },
+   {
+    "chunk_id": "dependencies/dependencies-with-yield.md#5095fbd276",
+    "score": 22.662246
+   },
+   {
+    "chunk_id": "dependencies/dependencies-with-yield.md#076895cc69",
+    "score": 21.576491
+   }
+  ],
+  "answer": "If you have dependencies with yield, the exit code will run *after* the middleware [P1]. Normally the exit code of dependencies with yield is executed after the response is sent to the client [P2].",
+  "cited": [
+   "middleware.md#eb8969227c",
+   "dependencies/dependencies-with-yield.md#e88f311a43"
+  ]
+ },
+ {
+  "id": "a24",
+  "question": "What is a middleware in FastAPI?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "middleware.md#4ab16899f0",
+    "score": 9.986923
+   },
+   {
+    "chunk_id": "middleware.md#3b366ee463",
+    "score": 9.476418
+   },
+   {
+    "chunk_id": "middleware.md#eb8969227c",
+    "score": 8.841819
+   },
+   {
+    "chunk_id": "cors.md#fbb28e9729",
+    "score": 8.34179
+   }
+  ],
+  "answer": "You can add middleware to FastAPI applications [P1]. FastAPI provides several middlewares in fastapi.middleware just as a convenience for you, the developer [P4].",
+  "cited": [
+   "middleware.md#4ab16899f0",
+   "cors.md#fbb28e9729"
+  ]
+ },
+ {
+  "id": "a25",
+  "question": "Can a path parameter be optional?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "path-params-numeric-validations.md#d27fece937",
+    "score": 10.01746
+   },
+   {
+    "chunk_id": "dependencies/index.md#c9d142ba61",
+    "score": 9.618017
+   },
+   {
+    "chunk_id": "body-multiple-params.md#2254675e62",
+    "score": 9.519379
+   },
+   {
+    "chunk_id": "dependencies/dependencies-in-path-operation-decorators.md#59cbdfc3a4",
+    "score": 9.352847
+   }
+  ],
+  "answer": "For example, to declare a title metadata value for the path parameter item_id you can type: [P1]. First, of course, you can mix Path, Query and request body parameter declarations freely and FastAPI will know what to do [P3].",
+  "cited": [
+   "path-params-numeric-validations.md#d27fece937",
+   "body-multiple-params.md#2254675e62"
+  ]
+ },
+ {
+  "id": "a26",
+  "question": "In which version did FastAPI start supporting Annotated?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "query-params-str-validations.md#dcfa6aabb7",
+    "score": 11.645976
+   },
+   {
+    "chunk_id": "path-params-numeric-validations.md#59cf2d80cd",
+    "score": 10.98998
+   },
+   {
+    "chunk_id": "dependencies/index.md#cbf3abd3ff",
+    "score": 10.012715
+   },
+   {
+    "chunk_id": "dependencies/classes-as-dependencies.md#61b7075ff2",
+    "score": 9.850424
+   }
+  ],
+  "answer": "FastAPI added support for Annotated (and started recommending it) in version 0.95.0 [P1]. Make sure you [Upgrade the FastAPI version](../deployment/versions.md#upgrading-the-fastapi-versions) to at least 0.95.1 before using Annotated [P1].",
+  "cited": [
+   "query-params-str-validations.md#dcfa6aabb7"
+  ]
+ },
+ {
+  "id": "a27",
+  "question": "What are the default values of skip and limit in the query parameters example?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "query-params.md#002deb0c8b",
+    "score": 24.511496
+   },
+   {
+    "chunk_id": "query-params.md#4011e6ebbf",
+    "score": 23.451273
+   },
+   {
+    "chunk_id": "query-params.md#21b46d1460",
+    "score": 22.427768
+   },
+   {
+    "chunk_id": "query-params.md#7a3cc163b2",
+    "score": 21.804288
+   }
+  ],
+  "answer": "In the example above they have default values of skip=0 and limit=10 [P1]. In the example above they have default values of skip=0 and limit=10 [P2].",
+  "cited": [
+   "query-params.md#002deb0c8b",
+   "query-params.md#4011e6ebbf"
+  ]
+ },
+ {
+  "id": "a28",
+  "question": "What is the downside of receiving an uploaded file as bytes?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "request-files.md#b2ee50a206",
+    "score": 15.171862
+   },
+   {
+    "chunk_id": "request-files.md#0c2d70d19e",
+    "score": 15.066317
+   },
+   {
+    "chunk_id": "request-files.md#e8abb071ba",
+    "score": 12.247874
+   },
+   {
+    "chunk_id": "request-files.md#d7f38b9b96",
+    "score": 11.08631
+   }
+  ],
+  "answer": "Use File, bytes, and UploadFile to declare files to be uploaded in the request, sent as form data [P2].",
+  "cited": [
+   "request-files.md#0c2d70d19e"
+  ]
+ },
+ {
+  "id": "a29",
+  "question": "How do I get False for an unchecked HTML checkbox in a form?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "request-forms.md#f36e5ba7ea",
+    "score": 29.249964
+   },
+   {
+    "chunk_id": "request-form-models.md#46abc24135",
+    "score": 15.962941
+   },
+   {
+    "chunk_id": "request-forms.md#1d604fa9cd",
+    "score": 15.591992
+   },
+   {
+    "chunk_id": "request-form-models.md#f975d4438f",
+    "score": 13.949461
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "a30",
+  "question": "Why must the OAuth2 password flow fields be named username and password?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "security/simple-oauth2.md#3530ddb155",
+    "score": 33.052517
+   },
+   {
+    "chunk_id": "security/simple-oauth2.md#e9961f36eb",
+    "score": 31.653325
+   },
+   {
+    "chunk_id": "security/first-steps.md#408cf392ec",
+    "score": 22.214767
+   },
+   {
+    "chunk_id": "request-forms.md#a4fbf4379f",
+    "score": 21.319637
+   }
+  ],
+  "answer": "OAuth2 specifies that when using the \"password flow\" (that we are using) the client/user must send username and password fields as form data [P1]. OAuth2 specifies that when using the \"password flow\" (that we are using) the client/user must send username and password fields as form data [P2].",
+  "cited": [
+   "security/simple-oauth2.md#3530ddb155",
+   "security/simple-oauth2.md#e9961f36eb"
+  ]
+ },
+ {
+  "id": "a31",
+  "question": "Is the content of a JWT encrypted?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "security/oauth2-jwt.md#f91cadadf0",
+    "score": 14.466914
+   },
+   {
+    "chunk_id": "security/oauth2-jwt.md#ac2b7c0a80",
+    "score": 8.02924
+   },
+   {
+    "chunk_id": "security/oauth2-jwt.md#c819d3b3b7",
+    "score": 7.565975
+   },
+   {
+    "chunk_id": "response-status-code.md#a4d9f62537",
+    "score": 7.398069
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "a32",
+  "question": "How do I stream server-sent events from a path operation?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "server-sent-events.md#85a2a1b64d",
+    "score": 26.287507
+   },
+   {
+    "chunk_id": "server-sent-events.md#74b0e884f1",
+    "score": 22.310405
+   },
+   {
+    "chunk_id": "stream-json-lines.md#69d6795215",
+    "score": 22.034765
+   },
+   {
+    "chunk_id": "server-sent-events.md#4d9fd88b50",
+    "score": 21.891652
+   }
+  ],
+  "answer": "You can stream data to the client using Server-Sent Events (SSE) [P1].",
+  "cited": [
+   "server-sent-events.md#85a2a1b64d"
+  ]
+ },
+ {
+  "id": "a33",
+  "question": "Which database does the SQL tutorial use and why?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "sql-databases.md#ba1738af9a",
+    "score": 13.580395
+   },
+   {
+    "chunk_id": "security/simple-oauth2.md#06061e4eb3",
+    "score": 11.646175
+   },
+   {
+    "chunk_id": "sql-databases.md#6d8d8535ce",
+    "score": 11.632821
+   },
+   {
+    "chunk_id": "sql-databases.md#46ca48e581",
+    "score": 11.623803
+   }
+  ],
+  "answer": "You can use [SQLModel](https://sqlmodel.tiangolo.com/) to interact with a SQL database and simplify the code with *data models* and *table models* [P1]. <div class=\"screenshot\"> <img src=\"/img/tutorial/sql-databases/image02.png\"> </div> [P1].",
+  "cited": [
+   "sql-databases.md#ba1738af9a"
+  ]
+ },
+ {
+  "id": "a34",
+  "question": "Does the OpenAPI schema of the main app include a mounted sub-application?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "static-files.md#e02da7b166",
+    "score": 24.75924
+   },
+   {
+    "chunk_id": "bigger-applications.md#a630fe56d5",
+    "score": 19.31038
+   },
+   {
+    "chunk_id": "bigger-applications.md#bf188626d9",
+    "score": 18.8741
+   },
+   {
+    "chunk_id": "bigger-applications.md#dd898a78df",
+    "score": 15.465996
+   }
+  ],
+  "answer": "The OpenAPI and docs from your main application won't include anything from the mounted application, etc [P1]. With app.include_router() we can add each APIRouter to the main FastAPI application [P4].",
+  "cited": [
+   "static-files.md#e02da7b166",
+   "bigger-applications.md#dd898a78df"
+  ]
+ },
+ {
+  "id": "a35",
+  "question": "What content type does a JSON Lines response use?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "first-steps.md#cd6f080dc3",
+    "score": 12.985465
+   },
+   {
+    "chunk_id": "stream-json-lines.md#37a7a46055",
+    "score": 12.489571
+   },
+   {
+    "chunk_id": "stream-json-lines.md#ba7722d484",
+    "score": 12.096266
+   },
+   {
+    "chunk_id": "stream-json-lines.md#93c25d97f9",
+    "score": 11.453601
+   }
+  ],
+  "answer": "JSON { \"openapi\": \"3.1.0\", \"info\": { \"title\": \"FastAPI\", \"version\": \"0.1.0\" }, \"paths\": { \"/items/\": { \"get\": { \"responses\": { \"200\": { \"description\": \"Successful Response\", \"content\": { \"application/json\": { [P1]. Because each JSON object will be separated by a new line, they can't contain literal new line characters in their content, but they can contain escaped new lines (\\n), which is part of the JSON standard [P3].",
+  "cited": [
+   "first-steps.md#cd6f080dc3",
+   "stream-json-lines.md#ba7722d484"
+  ]
+ },
+ {
+  "id": "a36",
+  "question": "How should test functions be named?",
+  "answerable": true,
+  "retrieved": [
+   {
+    "chunk_id": "testing.md#585deda55f",
+    "score": 9.600325
+   },
+   {
+    "chunk_id": "testing.md#871bd2f9f4",
+    "score": 9.567642
+   },
+   {
+    "chunk_id": "testing.md#cad7722964",
+    "score": 9.194128
+   },
+   {
+    "chunk_id": "path-params-numeric-validations.md#a40addbca4",
+    "score": 9.091954
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "u01",
+  "question": "How do I add GraphQL subscriptions to a FastAPI app?",
+  "answerable": false,
+  "retrieved": [
+   {
+    "chunk_id": "testing.md#871bd2f9f4",
+    "score": 12.026138
+   },
+   {
+    "chunk_id": "testing.md#585deda55f",
+    "score": 11.514234
+   },
+   {
+    "chunk_id": "first-steps.md#e472096e22",
+    "score": 11.297571
+   },
+   {
+    "chunk_id": "testing.md#0f695e6b7b",
+    "score": 10.57335
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "u02",
+  "question": "Which Helm chart should I use to deploy FastAPI on Kubernetes?",
+  "answerable": false,
+  "retrieved": [
+   {
+    "chunk_id": "first-steps.md#f632ed04f2",
+    "score": 12.870133
+   },
+   {
+    "chunk_id": "first-steps.md#c2348ad829",
+    "score": 11.149114
+   },
+   {
+    "chunk_id": "first-steps.md#1efc744fdc",
+    "score": 10.43892
+   },
+   {
+    "chunk_id": "first-steps.md#d8ac862bf8",
+    "score": 10.098234
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "u03",
+  "question": "How do I limit requests per IP address with a built-in rate limiter?",
+  "answerable": false,
+  "retrieved": [
+   {
+    "chunk_id": "testing.md#871bd2f9f4",
+    "score": 14.340962
+   },
+   {
+    "chunk_id": "testing.md#585deda55f",
+    "score": 13.749094
+   },
+   {
+    "chunk_id": "dependencies/dependencies-with-yield.md#5095fbd276",
+    "score": 9.289206
+   },
+   {
+    "chunk_id": "cors.md#4cb13cdcf1",
+    "score": 8.127276
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "u04",
+  "question": "Which gRPC services can FastAPI expose?",
+  "answerable": false,
+  "retrieved": [
+   {
+    "chunk_id": "dependencies/index.md#0f412dc59d",
+    "score": 7.976792
+   },
+   {
+    "chunk_id": "dependencies/index.md#418db68176",
+    "score": 7.952054
+   },
+   {
+    "chunk_id": "dependencies/index.md#afefbc0693",
+    "score": 7.612473
+   },
+   {
+    "chunk_id": "query-params.md#c4f87a1b43",
+    "score": 6.631041
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "u05",
+  "question": "How do I configure Redis as a cache backend?",
+  "answerable": false,
+  "retrieved": [
+   {
+    "chunk_id": "server-sent-events.md#3d5bed04f9",
+    "score": 11.196265
+   },
+   {
+    "chunk_id": "cors.md#9698f28d6f",
+    "score": 10.98777
+   },
+   {
+    "chunk_id": "testing.md#871bd2f9f4",
+    "score": 8.99137
+   },
+   {
+    "chunk_id": "testing.md#585deda55f",
+    "score": 8.474851
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "u06",
+  "question": "What is the default number of Gunicorn workers?",
+  "answerable": false,
+  "retrieved": [
+   {
+    "chunk_id": "path-params-numeric-validations.md#5e02de2b08",
+    "score": 8.907136
+   },
+   {
+    "chunk_id": "response-status-code.md#366a832758",
+    "score": 8.631459
+   },
+   {
+    "chunk_id": "response-status-code.md#e2e8bda450",
+    "score": 7.545665
+   },
+   {
+    "chunk_id": "path-params-numeric-validations.md#12f34b78ab",
+    "score": 7.535629
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "u07",
+  "question": "How do I translate an app's error messages into French?",
+  "answerable": false,
+  "retrieved": [
+   {
+    "chunk_id": "testing.md#585deda55f",
+    "score": 13.450882
+   },
+   {
+    "chunk_id": "testing.md#871bd2f9f4",
+    "score": 12.694137
+   },
+   {
+    "chunk_id": "testing.md#0f695e6b7b",
+    "score": 12.03739
+   },
+   {
+    "chunk_id": "background-tasks.md#74e854e6a7",
+    "score": 11.279115
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ },
+ {
+  "id": "u08",
+  "question": "How do I send emails with an SMTP server configured in settings?",
+  "answerable": false,
+  "retrieved": [
+   {
+    "chunk_id": "testing.md#585deda55f",
+    "score": 10.282659
+   },
+   {
+    "chunk_id": "testing.md#871bd2f9f4",
+    "score": 9.628799
+   },
+   {
+    "chunk_id": "frontend.md#18ff6e7ddd",
+    "score": 9.483322
+   },
+   {
+    "chunk_id": "stream-json-lines.md#69d6795215",
+    "score": 9.199728
+   }
+  ],
+  "answer": "I don't know.",
+  "cited": []
+ }
+]
