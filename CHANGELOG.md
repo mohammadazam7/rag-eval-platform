@@ -6,6 +6,10 @@ All notable changes are recorded here. The format follows
 ## [Unreleased]
 
 ### Added
+- The web page now answers questions in the browser. BM25 retrieval and the extractive
+  answerer are ported to TypeScript and tested for parity with the Python pipeline on
+  all 44 benchmark questions; answers link to their source passage, and the benchmark
+  is shown as charts with 95% ranges. The 3D map is now one of three views.
 - `--k` option for the FastAPI benchmark runner, so the answer budget can be changed
   without editing the script; the results header records which budget produced it.
   Thanks to @ompanda01 (#4).

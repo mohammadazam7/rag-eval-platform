@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect, useState, type CSSProperties } from "react";
 import { ChunkTable } from "./ChunkTable";
 import { canShowGalaxy } from "./environment";
 import { chunkStatus, findChunk, type ChunkStatus } from "./gallery";
+import "./map.css";
 import type { GalleryData, RetrievalMethod } from "./types";
 
 // Three.js and the fiber renderer are only needed when the 3D view can actually show,
@@ -25,7 +26,8 @@ const STATUS_KEY = [
 
 type LoadState = { status: "loading" } | { status: "error"; message: string } | { status: "ready"; data: GalleryData };
 
-export function App() {
+/** The corpus as a 3D map: what each retriever found for one question, against its gold evidence. */
+export function MapView() {
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [method, setMethod] = useState<RetrievalMethod>("hybrid");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -48,19 +50,21 @@ export function App() {
       );
   }, []);
 
-  if (state.status === "loading") return <p role="status">Loading the gallery data…</p>;
+  if (state.status === "loading") return <p role="status">Loading the map…</p>;
   if (state.status === "error") {
-    return <p role="alert">Could not load the gallery data: {state.message}</p>;
+    return <p role="alert">Could not load the map: {state.message}</p>;
   }
 
   const { data } = state;
   const selected = selectedId ? findChunk(data, selectedId) : undefined;
   return (
-    <main>
-      <h1>Retrieval Galaxy</h1>
+    <div className="map-view">
+      <div className="map-main">
+      <h2>The manual as a map</h2>
       <p className="lede">
-        {data.chunks.length} chunks from the <code>{data.corpus}</code> corpus, laid out by
-        embedding similarity. Question: <strong>{data.question.text}</strong>
+        Each dot is one of the {data.chunks.length} passages; passages on similar topics sit close
+        together. Coloured dots are what the search found for{" "}
+        <strong>{data.question.text}</strong>
       </p>
       <div className="controls">
         <fieldset>
@@ -121,6 +125,7 @@ export function App() {
           "Select a chunk in the table or the 3D view to read it."
         )}
       </p>
-    </main>
+      </div>
+    </div>
   );
 }
