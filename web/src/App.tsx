@@ -1,46 +1,44 @@
-import { lazy, Suspense, useEffect, useState, type CSSProperties } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 
-import { ChunkTable } from "./ChunkTable";
-import { canShowGalaxy } from "./environment";
-import { chunkStatus, findChunk, type ChunkStatus } from "./gallery";
-import type { GalleryData, RetrievalMethod } from "./types";
+import { AskView } from "./AskView";
+import type { AskData } from "./askTypes";
+import { BM25 } from "./engine";
+import { ResultsView } from "./ResultsView";
 
-// Three.js and the fiber renderer are only needed when the 3D view can actually show,
-// so visitors without WebGL or with reduced motion never download them.
-const Galaxy = lazy(() => import("./Galaxy").then((m) => ({ default: m.Galaxy })));
+const MapView = lazy(() => import("./MapView").then((m) => ({ default: m.MapView })));
 
-const METHOD_LABEL: Record<RetrievalMethod, string> = { bm25: "BM25", hybrid: "Hybrid (RRF)" };
-const STATUS_TEXT: Record<ChunkStatus, string> = {
-  "gold-and-retrieved": "gold evidence, retrieved",
-  gold: "gold evidence, not retrieved",
-  retrieved: "retrieved",
-  none: "not retrieved",
-};
-const STATUS_KEY = [
-  ["Gold and retrieved", "var(--both)"],
-  ["Gold, missed", "var(--gold)"],
-  ["Retrieved", "var(--retrieved)"],
-  ["Other chunks", "var(--none)"],
+const TABS = [
+  ["ask", "Ask"],
+  ["results", "Measured results"],
+  ["map", "Map"],
 ] as const;
+type Tab = (typeof TABS)[number][0];
 
-type LoadState = { status: "loading" } | { status: "error"; message: string } | { status: "ready"; data: GalleryData };
+const tabFromHash = (): Tab => {
+  const hash = typeof window === "undefined" ? "" : window.location.hash.slice(1);
+  return TABS.some(([id]) => id === hash) ? (hash as Tab) : "ask";
+};
+
+type LoadState =
+  | { status: "loading" }
+  | { status: "error"; message: string }
+  | { status: "ready"; data: AskData };
 
 export function App() {
+  const [tab, setTab] = useState<Tab>(tabFromHash);
   const [state, setState] = useState<LoadState>({ status: "loading" });
-  const [method, setMethod] = useState<RetrievalMethod>("hybrid");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [showGalaxy, setShowGalaxy] = useState(false);
 
   useEffect(() => {
-    setShowGalaxy(canShowGalaxy());
+    const onHash = () => setTab(tabFromHash());
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
   useEffect(() => {
-    const base = import.meta.env.BASE_URL;
-    fetch(`${base}data.json`)
+    fetch(`${import.meta.env.BASE_URL}ask.json`)
       .then((res) => {
-        if (!res.ok) throw new Error(`data.json: HTTP ${res.status}`);
-        return res.json() as Promise<GalleryData>;
+        if (!res.ok) throw new Error(`ask.json: HTTP ${res.status}`);
+        return res.json() as Promise<AskData>;
       })
       .then((data) => setState({ status: "ready", data }))
       .catch((err: unknown) =>
@@ -48,79 +46,54 @@ export function App() {
       );
   }, []);
 
-  if (state.status === "loading") return <p role="status">Loading the gallery data…</p>;
-  if (state.status === "error") {
-    return <p role="alert">Could not load the gallery data: {state.message}</p>;
-  }
+  // Building the index tokenizes every passage once; about 10 ms for this corpus.
+  const index = useMemo(
+    () => (state.status === "ready" ? new BM25(state.data.chunks) : null),
+    [state],
+  );
 
-  const { data } = state;
-  const selected = selectedId ? findChunk(data, selectedId) : undefined;
+  const select = (next: Tab) => {
+    window.history.replaceState(null, "", `#${next}`);
+    setTab(next);
+  };
+
   return (
-    <main>
-      <h1>Retrieval Galaxy</h1>
-      <p className="lede">
-        {data.chunks.length} chunks from the <code>{data.corpus}</code> corpus, laid out by
-        embedding similarity. Question: <strong>{data.question.text}</strong>
-      </p>
-      <div className="controls">
-        <fieldset>
-          <legend>Retrieval method</legend>
-          {(["bm25", "hybrid"] as const).map((m) => (
-            <label key={m}>
-              <input
-                type="radio"
-                name="method"
-                value={m}
-                checked={method === m}
-                onChange={() => setMethod(m)}
-              />
-              {METHOD_LABEL[m]}
-            </label>
-          ))}
-        </fieldset>
-        <ul className="key" aria-label="Colour key">
-          {STATUS_KEY.map(([label, color]) => (
-            <li key={label} style={{ "--dot": color } as CSSProperties}>
+    <div className="shell">
+      <header className="masthead">
+        <a className="wordmark" href="#ask" onClick={() => select("ask")}>
+          rag-eval-platform
+        </a>
+        <nav aria-label="Views">
+          {TABS.map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              className="tab"
+              aria-current={tab === id ? "page" : undefined}
+              onClick={() => select(id)}
+            >
               {label}
-            </li>
+            </button>
           ))}
-        </ul>
-      </div>
-      <div className={showGalaxy ? "layout" : "layout table-only"}>
-        {showGalaxy && (
-          <div className="stage">
-            <Suspense fallback={<p role="status">Loading the 3D view…</p>}>
-              <Galaxy
-                data={data}
-                method={method}
-                selectedId={selectedId}
-                onSelect={setSelectedId}
-              />
-            </Suspense>
-          </div>
-        )}
-        <div className="table-wrap">
-          <ChunkTable
-            data={data}
-            method={method}
-            selectedId={selectedId}
-            onSelect={setSelectedId}
-          />
-        </div>
-      </div>
-      <p className="selected" aria-live="polite">
-        {selected ? (
-          <>
-            <span className="doc">
-              {selected.doc_id} · {STATUS_TEXT[chunkStatus(data, method, selected)]}
-            </span>
-            <br />
-            {selected.preview}
-          </>
-        ) : (
-          "Select a chunk in the table or the 3D view to read it."
-        )}
-      </p>
-    </main>
+        </nav>
+        <a className="source" href="https://github.com/mohammadazam7/rag-eval-platform">
+          Source on GitHub
+        </a>
+      </header>
+
+      {state.status === "loading" && <p role="status" className="notice">Loading the manual…</p>}
+      {state.status === "error" && (
+        <p role="alert" className="notice">
+          The manual could not be loaded ({state.message}). Reload the page to try again.
+        </p>
+      )}
+      {state.status === "ready" && index && tab === "ask" && <AskView data={state.data} index={index} />}
+      {state.status === "ready" && tab === "results" && <ResultsView data={state.data} />}
+      {tab === "map" && (
+        <Suspense fallback={<p role="status" className="notice">Loading the map…</p>}>
+          <MapView />
+        </Suspense>
+      )}
+    </div>
   );
 }

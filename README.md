@@ -8,8 +8,8 @@ retrieval or generation made the system better or worse.
 
 > **Status:** v1.0. Chunking, retrieval, re-ranking, cited answers, the evaluation
 > harness and the HTTP service are in place, with measured results on a public corpus
-> below. [Retrieval Galaxy](https://mohammadazam7.github.io/rag-eval-platform/) shows the
-> benchmark corpus and what each retriever finds.
+> below. [Try it in your browser](https://mohammadazam7.github.io/rag-eval-platform/): ask
+> the FastAPI manual a question and see the passage behind the answer.
 
 ## Overview
 
@@ -108,19 +108,32 @@ Open `http://localhost:8000/` to see the answer next to the passages it was buil
 with the cited ones marked. `POST /corpora/{name}/evaluate` runs the same harness as
 `benchmarks/fastapi-tutorial/run.py` on questions you send in the request.
 
-## Retrieval Galaxy
+## Try it in your browser
 
-![The Retrieval Galaxy page: chunks in 3D on the left, the ranked table on the right](docs/images/retrieval-galaxy.png)
+![Asking the manual a question: the quoted answer on the left, its source passage on the right](docs/images/ask-the-manual.png)
 
-A small React and Three.js page in `web/` lays out the FastAPI tutorial chunks in 3D by
-embedding similarity (PCA on the hashing embedder's vectors) and highlights which ones
-BM25 and the hybrid retriever found for one benchmark question, against its gold
-evidence. It falls back to a plain, keyboard-navigable table without WebGL or when
-reduced motion is requested; the table carries every piece of information the 3D view
-does, so nothing is 3D-only.
+[mohammadazam7.github.io/rag-eval-platform](https://mohammadazam7.github.io/rag-eval-platform/)
+answers questions about the FastAPI manual with no server behind it. Each sentence of an
+answer is a quote, and clicking it opens the passage it came from with that sentence
+highlighted. A question the manual cannot answer gets "The manual does not answer this".
+
+- **Ask.** BM25 retrieval and the extractive answerer run in the page. They are a
+  TypeScript port of the Python pipeline (`web/src/engine.ts`), and a test requires the
+  port to retrieve the same passages, with the same scores, and produce the same answer
+  text as the Python code on all 44 benchmark questions. Searching the 979 passages
+  takes a few milliseconds.
+- **Measured results.** The benchmark table above as charts with their 95% ranges.
+- **Map.** The passages laid out in 3D by embedding similarity (PCA on the hashing
+  embedder's vectors), with what BM25 and the hybrid retriever found for one question
+  against its gold evidence. Without WebGL, or when reduced motion is requested, it
+  shows the same information as a keyboard-navigable table.
+
+The page only does what the benchmark's best configuration does: keyword search and
+quoted answers. It is not a chat model, and it does not write new sentences.
 
 ```bash
-python scripts/export_gallery_data.py      # writes web/public/data.json
+python scripts/export_ask_data.py          # writes web/public/ask.json and the parity fixture
+python scripts/export_gallery_data.py      # writes web/public/data.json for the map
 cd web && npm install && npm run dev
 ```
 
